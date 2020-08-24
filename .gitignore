@@ -1,0 +1,9 @@
+#directories
+bower_components
+node_modules
+dist
+subtitlebar-win32-x64
+
+#files
+*.tgz
+*.log

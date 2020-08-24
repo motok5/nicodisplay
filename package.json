@@ -1,0 +1,37 @@
+{
+  "name": "subtitlebar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "webpack --display-error-details -w",
+    "production": "webpack --mode=production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-packager . subtitlebar --platform=win32 --arch=x64 --electron-version=9.2.0"
+  },
+  "author": "moto",
+  "license": "MIT",
+  "devDependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@types/react": "^16.9.45",
+    "@types/react-dom": "^16.9.8",
+    "electron": "^9.2.0",
+    "electron-packager": "^15.0.0",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "ts-loader": "^8.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@types/socket.io-client": "^1.4.33",
+    "electron-store": "^6.0.0",
+    "path": "^0.12.7",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  }
+}
