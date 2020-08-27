@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BrowserWindow, app, Menu, Tray, nativeImage } from 'electron';
+import electron, {
+  BrowserWindow,
+  app,
+  Menu,
+  Tray,
+  nativeImage,
+} from 'electron';
 const mainURL = `file://${__dirname}/../assets/index.html`;
 const settingsURL = `file://${__dirname}/../assets/settings.html`;
 
@@ -9,9 +15,13 @@ let tray = null;
 
 const createWindow = (): void => {
   if (mainWindow === null) {
+    const { screen } = electron;
+    const size = screen.getPrimaryDisplay().size;
     mainWindow = new BrowserWindow({
-      width: 720,
-      height: 200,
+      x: 0,
+      y: 0,
+      width: size.width,
+      height: size.height,
       frame: false,
       transparent: true,
       alwaysOnTop: true,
@@ -22,6 +32,7 @@ const createWindow = (): void => {
         nodeIntegration: true,
       },
     });
+    mainWindow.setIgnoreMouseEvents(true);
 
     mainWindow.loadURL(mainURL);
 
@@ -85,6 +96,13 @@ app.whenReady().then(() => {
         }
         settingsWindow?.show();
         settingsWindow?.focus();
+      },
+    },
+    {
+      label: 'Relaunch',
+      click: function () {
+        app.relaunch();
+        app.exit();
       },
     },
     {

@@ -1,5 +1,5 @@
 {
-  "name": "subtitlebar",
+  "name": "nicodisplay",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
@@ -8,7 +8,7 @@
     "build": "webpack --display-error-details -w",
     "production": "webpack --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-packager . subtitlebar --platform=win32 --arch=x64 --electron-version=9.2.0"
+    "package": "electron-packager . nicodisplay --platform=win32 --arch=x64 --electron-version=9.2.0"
   },
   "author": "moto",
   "license": "MIT",
@@ -30,6 +30,7 @@
   "dependencies": {
     "@types/socket.io-client": "^1.4.33",
     "electron-store": "^6.0.0",
+    "nicojs": "^1.1.8",
     "path": "^0.12.7",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
