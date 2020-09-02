@@ -9,7 +9,7 @@ const store = new Store<StoreType>();
 
 const App: React.FC = () => {
   const [botUrl, setBotUrl] = useState(
-    store.get('botUrl', 'http://localhost:3000')
+    store.get('botUrl', 'http://localhost:3000') //なければ右
   );
 
   const handleChangeForm = useCallback((event) => {

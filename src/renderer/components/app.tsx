@@ -12,7 +12,7 @@ const nicoJS = require('nicoJS');
 const nico = new nicoJS({
   app: document.getElementById('contents'),
   width: size.width,
-  height: size.height,
+  height: Math.round(size.height*0.95),
 });
 
 nico.listen();
@@ -25,12 +25,13 @@ type StoreType = {
 const store = new Store<StoreType>();
 const botUrl = store.get('botUrl', defaultBotUrl);
 
-const socketio = io(botUrl);
+
+const socketio = io(botUrl); //connectionを呼び出す
 
 const App: React.FC = () => {
   nico.send('This is NicoDisplay APP!(Bot URL: ' + botUrl + ')');
 
-  socketio.on('message', function (chatmsg: string) {
+  socketio.on('message', function (chatmsg: string) {  //待ってる
     console.log(chatmsg);
     nico.send(chatmsg);
   });
