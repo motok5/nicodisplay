@@ -11,7 +11,7 @@ const settingsURL = `file://${__dirname}/../assets/settings.html`;
 
 let mainWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;
-let tray = null;
+let tray: any = null;
 
 const createWindow = (): void => {
   if (mainWindow === null) {
@@ -21,7 +21,7 @@ const createWindow = (): void => {
       x: 0,
       y: 0,
       width: size.width,
-      height: size.height,
+      height: Math.round(size.height*0.95),
       frame: false,
       transparent: true,
       alwaysOnTop: true,
@@ -69,7 +69,7 @@ const createWindow = (): void => {
 app.on('ready', createWindow);
 app.whenReady().then(() => {
   tray = new Tray(
-    nativeImage.createFromPath(`${__dirname}/../assets/icon.png`)
+    nativeImage.createFromPath(`${__dirname}/../assets/show.png`)
   );
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -80,12 +80,16 @@ app.whenReady().then(() => {
         }
         mainWindow?.show();
         mainWindow?.focus();
+        //ここに入れる
+        tray.setImage(`${__dirname}/../assets/show.png`);
       },
     },
     {
       label: 'Hide',
       click: function () {
         mainWindow?.hide();
+        //ここに入れる
+        tray.setImage(`${__dirname}/../assets/hide.png`);
       },
     },
     {
