@@ -6,25 +6,31 @@ import Store from 'electron-store';
 const { remote } = require('electron');
 const { screen } = remote;
 const size = screen.getPrimaryDisplay().size;
+const fs = require('fs');
+const console = require('electron').remote.require('console');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+type StoreType = {
+  botUrl: string;
+};
+const store = new Store<StoreType>();
+var fontsize = store.get("fontSize", "50"); //fontsizeをstoreから呼び出し
+
 const nicoJS = require('nicoJS');
 const nico = new nicoJS({
   app: document.getElementById('contents'),
   width: size.width,
   height: Math.round(size.height*0.95),
+  color: "white",
+  font_size: fontsize,
+  speed: 10,
 });
 
-nico.listen();
+nico.listen(); //入力待ちかな
 
 const defaultBotUrl = 'http://localhost:3000';
-type StoreType = {
-  botUrl: string;
-};
 
-const store = new Store<StoreType>();
 const botUrl = store.get('botUrl', defaultBotUrl);
-
 
 const socketio = io(botUrl); //connectionを呼び出す
 

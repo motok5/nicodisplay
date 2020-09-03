@@ -9,24 +9,12 @@
   </head>
 
   <body>
-    <div id="contents"></div>
+    <main>
+      <div id="main"></div>
+    </main>
     <footer>
-      <div class="change-button-wrapper">
-        <button id="change-button">変更</button>
-      </div>
     </footer>
     <script type="text/javascript" src="../dist/scripts/settings.js"></script>
-    <script>
-    var btn = document.getElementById('change-button');
-    btn.addEventListener('click', function() {
-      var result = window.confirm('変更を保存しますか？\n(nicodisplayは再起動されます)');
-      if (result) {
-        console.log("変更する");
-      } else {
-        console.log("変更しない");
-      }
-    })
-    </script>
   </body>
 
 </html>
