@@ -31,6 +31,7 @@ const createWindow = (): void => {
       webPreferences: {
         nodeIntegration: true,
       },
+      icon: `${__dirname}/../assets/icons/show.png`,
     });
     mainWindow.setIgnoreMouseEvents(true);
 
@@ -53,6 +54,7 @@ const createWindow = (): void => {
       webPreferences: {
         nodeIntegration: true,
       },
+      icon: `${__dirname}/../assets/icons/show.png`,
     });
     settingsWindow.setMenu(null);
     settingsWindow.loadURL(settingsURL);
@@ -69,7 +71,7 @@ const createWindow = (): void => {
 app.on('ready', createWindow);
 app.whenReady().then(() => {
   tray = new Tray(
-    nativeImage.createFromPath(`${__dirname}/../assets/show.png`)
+    nativeImage.createFromPath(`${__dirname}/../assets/icons/show.png`)
   );
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -80,16 +82,14 @@ app.whenReady().then(() => {
         }
         mainWindow?.show();
         mainWindow?.focus();
-        //ここに入れる
-        tray.setImage(`${__dirname}/../assets/show.png`);
+        tray.setImage(`${__dirname}/../assets/icons/show.png`);
       },
     },
     {
       label: 'Hide',
       click: function () {
         mainWindow?.hide();
-        //ここに入れる
-        tray.setImage(`${__dirname}/../assets/hide.png`);
+        tray.setImage(`${__dirname}/../assets/icons/hide.png`);
       },
     },
     {
