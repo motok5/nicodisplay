@@ -1,0 +1,28 @@
+body {
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+
+.caption {
+  text-align: left;
+  padding: 10px;
+  height: 100%;
+  text-shadow:
+  1px  1px 0px #000000,
+ -1px  1px 0px #000000,
+  1px -1px 0px #000000,
+ -1px -1px 0px #000000,
+  1px  0px 0px #000000,
+  0px  1px 0px #000000,
+ -1px  0px 0px #000000,
+  0px -1px 0px #000000;
+}
+
+ul {
+  list-style: none;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}

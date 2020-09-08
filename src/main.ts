@@ -6,12 +6,18 @@ import electron, {
   Tray,
   nativeImage,
 } from 'electron';
+const fs = require('fs');
 const mainURL = `file://${__dirname}/../assets/index.html`;
 const settingsURL = `file://${__dirname}/../assets/settings.html`;
 
 let mainWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;
 let tray: any = null;
+
+// now_layerを初期化
+const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+settings.now_layer = "0";
+fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
 
 const createWindow = (): void => {
   if (mainWindow === null) {
@@ -28,14 +34,15 @@ const createWindow = (): void => {
       resizable: true,
       hasShadow: false,
       skipTaskbar: true,
+      show: false,
       webPreferences: {
         nodeIntegration: true,
       },
       icon: `${__dirname}/../assets/icons/show.png`,
     });
     mainWindow.setIgnoreMouseEvents(true);
-
     mainWindow.loadURL(mainURL);
+    mainWindow.showInactive();
 
     // // for debug
     // mainWindow.webContents.openDevTools();
@@ -49,7 +56,9 @@ const createWindow = (): void => {
   if (settingsWindow === null) {
     settingsWindow = new BrowserWindow({
       width: 720,
-      height: 500,
+      height: 700,
+      frame: false, //移動不可
+      resizable: false,
       show: false,
       webPreferences: {
         nodeIntegration: true,

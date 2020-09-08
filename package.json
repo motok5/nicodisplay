@@ -30,6 +30,7 @@
   "dependencies": {
     "@types/socket.io-client": "^1.4.33",
     "electron-store": "^6.0.0",
+    "material-ui-color-picker": "^3.5.1",
     "nicojs": "^1.1.8",
     "path": "^0.12.7",
     "socket.io": "^2.3.0",
