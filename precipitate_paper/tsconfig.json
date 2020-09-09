@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "es2017",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
@@ -8,6 +8,6 @@
     "sourceMap": false
   },
   "files": [
-    "src/Main.ts","src/Snow.ts"
+    "src/Main.ts","src/Paper.ts"
   ]
 }

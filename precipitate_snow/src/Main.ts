@@ -1,12 +1,12 @@
 "use strict";
-const {app} = require('electron').remote;
-const remote = require('electron').remote;
-let w = remote.getCurrentWindow();
+var remote = require('electron').remote;
+var w = remote.getCurrentWindow();
 /// <reference path="./Snow.ts" />
 var outofWindow_num = 0;
+var snow_num = 200;
 module project {
 
-    export class Main {
+    export class Main_Snow {
         private context2d:CanvasRenderingContext2D;
         private myCanvas:HTMLCanvasElement;
         private snowList:Snow[] = [];
@@ -23,7 +23,7 @@ module project {
         }
         // 雪を新規で作成する
         private createSnow = () => {
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < snow_num; i++) {
                 var snow = new Snow();
                 this.snowList.push(snow);
                 // 画面の横いっぱいに雪を降らせる
@@ -46,12 +46,14 @@ module project {
                 // 画面外に移動したら、上に移動し、全てが画面外に行くまで降ってこないようにする。
                 if (snow.y >= this.myCanvas.height + snow.size) {
                     outofWindow_num += 1;
-                    snow.y -= _this.myCanvas.height*1000 - snow.size;
-                    // snow.baseX = _this.myCanvas.width * Math.random();
-                    if (outofWindow_num >= 100) {
+                    snow.y -= this.myCanvas.height*1000 - snow.size;
+                    if (outofWindow_num >= snow_num) {
+                      const fs = require("fs");
+                      const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
+                      settings.now_layer = String(Number(settings.now_layer) - 1);
+                      fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
                       w.close();
-                    // snow.y -= this.myCanvas.height - snow.size;
-                    // snow.baseX = this.myCanvas.width * Math.random();
+                    }
                 }
             }
         }

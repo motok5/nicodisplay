@@ -55,7 +55,7 @@ const createWindow = (): void => {
 
   if (settingsWindow === null) {
     settingsWindow = new BrowserWindow({
-      width: 720,
+      width: 1000,
       height: 700,
       frame: false, //移動不可
       resizable: false,
