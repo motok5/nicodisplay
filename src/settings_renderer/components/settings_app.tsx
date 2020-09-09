@@ -5,8 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import Dialog from '@material-ui/core/Dialog';
-import Restore from '@material-ui/icons/Restore';
-import LocationOn from '@material-ui/icons/LocationOn';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -23,7 +21,24 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MaterialTable, { Column } from 'material-table';
-import Paper from '@material-ui/core/Paper';
+
+import { forwardRef } from 'react';
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+
 import ColorPicker from 'material-ui-color-picker'
 import Store from 'electron-store';
 const fs = require('fs');
@@ -66,6 +81,26 @@ interface TableState {
   columns: Array<Column<Row>>;
   data: Row[];
 }
+const tableIcons = {
+Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
 const App: React.FC = () => {
   //格納値
   const [botUrl, setBotUrl] = useState(
@@ -93,35 +128,32 @@ const App: React.FC = () => {
     setBotUrl(vboturl);
     store.set('botUrl', vboturl);
     //Simple-Settings
-    // setAllSettings(vallsettings);
     store.set("simpleSettings", vsimplesettings)
     //Advanced-Settings
-    // setAuthorColor(vauthorsettings);
     store.set("advancedSettings", vadvancedsettings)
     //font-size
-    // setFontSize(vfontsize);
     store.set('fontSize', vfontsize);
     //random-font-size
-    // setRandomFontSize(vrandomfontsize);
     store.set('randomFontSize', vrandomfontsize);
     //color
-    // setColor(vcolor);
     store.set('color', vcolor);
     //random-color
-    // setRandomColor(vrandomcolor);
     store.set("randomColor", vrandomcolor)
     //max_layer
-    const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
-    settings.max_layer = String(vmaxlayer);
+    const settings_overwrite = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+    settings_overwrite.max_layer = String(vmaxlayer);
     //authors-data
-    settings.authors_list = tableState.data;
-    fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+    try {
+      settings_overwrite.authors_list = tableState.data;
+    } catch(error) {
+      //pass
+    }
+    fs.writeFileSync('./nico_settings.json', JSON.stringify(settings_overwrite));
     //restart
     app.relaunch();
     app.exit();
 
   };
-
   const restartDialogNo = () => {
     setRestartDialogOpen(false);
   };
@@ -147,9 +179,18 @@ const App: React.FC = () => {
     setSwitcherState({ ...switcherState, [event.target.name]: event.target.checked });
     vsimplesettings = event.target.checked;
   };
-  const switchAdvancedSettings = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const switchAdvancedSettings = (event:any) => {
     setSwitcherState({ ...switcherState, [event.target.name]: event.target.checked });
     vadvancedsettings = event.target.checked;
+  };
+  const switchStyles = (event:any) => {
+    if (event.target.checked) {
+      document.getElementById("SimpleSettingsContainer").classList.add("blur");
+      document.getElementById("AdvancedSettingsContainer").classList.remove("blur");
+    } else {
+      document.getElementById("AdvancedSettingsContainer").classList.add("blur");
+      document.getElementById("SimpleSettingsContainer").classList.remove("blur");
+    }
   };
   const changeFontSize = useCallback((event, value) => {
     vfontsize = value;
@@ -167,7 +208,6 @@ const App: React.FC = () => {
   }, []);
   const switchRandomColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSwitcherState({ ...switcherState, [event.target.name]: event.target.checked });
-    // console.log(event.target.checked);
     vrandomcolor = event.target.checked;
   };
   const changeMaxLayer = useCallback((value) => {
@@ -198,29 +238,21 @@ const App: React.FC = () => {
 
   //Material-UI-Style
   const AllContainer = {
-    // backgroundColor: "#2F3136",
     width: "100%",
   };
   const HeaderContainer = {
     height: 100,
     width: "100%",
-    // margin: "auto",
-    // align: "center",
-    //backgroundColor: "gray",
   };
   const BodyContainer = {
-    // height: "auto",
     width: "100%",
-    //backgroundColor: "gray",
   };
   const FooterContainer = {
     marginBottom: 100,
     width: "100%",
-    //backgroundColor: "gray",
   };
   const BotURLContainer = {
     width: "90%",
-    //backgroundColor: "gray",
   };
   const BotURLTextField = {
     width:"100%",
@@ -236,10 +268,8 @@ const App: React.FC = () => {
   };
   const SimpleSettingsSwitcherContainer = {
     width: "100%",
-    //pass
   };
   const SimpleSettingsSwitcher = {
-    // width: "100%",
     //pass
   };
   const SubTitle = {
@@ -253,23 +283,19 @@ const App: React.FC = () => {
   };
   const FontSizeContainer = {
     width: "100%",
-    //backgroundColor: "gray",
   };
   const FontSizeSlider = {
     width: "100%",
-    //width: "75%",
   };
   const RandomFontSizeSwitcherContainer = {
     width: "100%",
     //pass
   };
   const RandomFontSizeSwitcher = {
-    // width: "100%",
     //pass
   };
   const ColorContainer = {
     width: "100%",
-    //backgroundColor: "gray",
   };
   const ColorPickerFixed = {
     width: "100%",
@@ -279,49 +305,39 @@ const App: React.FC = () => {
     //pass
   };
   const RandomColorSwitcher = {
-    // width: "100%",
     //pass
   };
   const MaxLayerContainer = {
     width: "100%",
-    //backgroundColor: "gray",
   };
   const MaxLayerSlider = {
     width: "100%",
-    //width: "75%",
   };
   const AdvancedSettingsTitle = {
     width:"100%",
   };
   const AdvancedSettingsSwitcherContainerContainer = {
     width: "100%",
-    //pass
   };
   const AdvancedSettingsSwitcherContainer = {
     width: "100%",
-    //pass
   };
   const AdvancedSettingsSwitcher = {
-    // width: "100%",
     //pass
   };
   const AdvancedSettingsContainer = {
     width:"100%",
   };
   const DataTable = {
-    // width:"100%",
   };
   const BottomNavigationFixed = {
     width: "100%",
-    // backgroundColor: "#2F3136",
   };
   const ChangeButton = {
-    // width: "100%",
-    // backgroundColor: "#2F3136",
+    //pass
   };
   const UnchangeButton = {
-    // width: "100%",
-    // backgroundColor: "#2F3136",
+    //pass
   };
   return (
     <Container style={AllContainer} id="AllContainer">
@@ -345,24 +361,25 @@ const App: React.FC = () => {
               onChange={(event) => changeBotUrl(event)}
             />
           </Container>
+          <Container style={AdvancedSettingsSwitcherContainerContainer}>
+            <Container style={AdvancedSettingsSwitcherContainer} id="AdvancedSettingsSwitcherContainer">
+              <FormControlLabel
+                style={AdvancedSettingsSwitcher}
+                id="AdvancedSettingsSwitcher"
+                label="Advanced Settings"
+                control=
+                  {<Switch
+                    checked={switcherState.checked_as}
+                    onChange={event => {switchAdvancedSettings(event);switchStyles(event)}}
+                    name="checked_as"
+                    color="primary" />}
+              />
+            </Container>
+          </Container>
           <Container style={SimpleSettingsTitle} id="SimpleSettingsTitle">
             <Typography id="Typo-Simple">
               Simple Settings
             </Typography>
-          </Container>
-          <Container style={SimpleSettingsSwitcherContainerContainer}>
-            <Container style={SimpleSettingsSwitcherContainer}>
-              <FormControlLabel
-                style={SimpleSettingsSwitcher}
-                label="Simple Settings"
-                control=
-                  {<Switch
-                    checked={switcherState.checked_ss}
-                    onChange={switchSimpleSettings}
-                    name="checked_ss"
-                    color="primary" />}
-              />
-            </Container>
           </Container>
           <Container style={SimpleSettingsContainer} id="SimpleSettingsContainer">
             <Container style={FontSizeContainer} id="FontSizeContainer">
@@ -448,32 +465,15 @@ const App: React.FC = () => {
               Advanced Settings
             </Typography>
           </Container>
-          <Container style={AdvancedSettingsSwitcherContainerContainer}>
-            <Container style={AdvancedSettingsSwitcherContainer}>
-              <FormControlLabel
-                style={AdvancedSettingsSwitcher}
-                label="Advanced Settings"
-                control=
-                  {<Switch
-                    checked={switcherState.checked_as}
-                    onChange={switchAdvancedSettings}
-                    name="checked_as"
-                    color="primary" />}
-              />
-              <Typography style={Explain} id="Explain" gutterBottom>
-                発言者ごとに文字サイズ、色を変更します。
-                ＊一度nicodisplayを起動させた状態で発言してください。
-              </Typography>
-            </Container>
-          </Container>
-          <Container style={AdvancedSettingsContainer}>
+          <Container style={AdvancedSettingsContainer} id="AdvancedSettingsContainer">
             <Container style={DataTable} id="DataTable">
             <MaterialTable
               title="User Data"
               columns={tableState.columns}
               data={tableState.data}
+              icons={tableIcons}
               editable={{
-                onRowAdd: (newData) =>
+                onRowAdd: (newData:any) =>
                   new Promise((resolve) => {
                     setTimeout(() => {
                       resolve();
@@ -484,7 +484,7 @@ const App: React.FC = () => {
                       });
                     }, 600);
                   }),
-                onRowUpdate: (newData, oldData) =>
+                onRowUpdate: (newData:any, oldData:any) =>
                   new Promise((resolve) => {
                     setTimeout(() => {
                       resolve();
@@ -497,7 +497,7 @@ const App: React.FC = () => {
                       }
                     }, 600);
                   }),
-                onRowDelete: (oldData) =>
+                onRowDelete: (oldData:any) =>
                   new Promise((resolve) => {
                     setTimeout(() => {
                       resolve();
@@ -566,160 +566,6 @@ const App: React.FC = () => {
           </BottomNavigation>
         </Container>
     </Container>
-    // <Container style={AllContainer}>
-    //   <form noValidate autoComplete="off">
-    //     <Container style={HeaderContainer} class="dragable">
-    //       <Typography gutterBottom>
-    //         Settings
-    //       </Typography>
-    //     </Container>
-    //     <Container style={BodyContainer}>
-    //       <Container style={BotURLContainer}>
-    //         <TextField
-    //           id="bot-url"
-    //           label="Bot Server URL"
-    //           variant="filled"
-    //           defaultValue={botUrl}
-    //           onChange={(event) => changeBotUrl(event)}
-    //         ></TextField>
-    //       </Container>
-    //       <Container style={FontSizeContainer}>
-    //         <Typography id="discrete-slider" gutterBottom>
-    //           Font Size
-    //         </Typography>
-    //         <Slider style={FontSizeSlider}
-    //         defaultValue={parseInt(vfontsize)}
-    //         getAriaValueText={valuetext_fontsize}
-    //         aria-labelledby="discrete-slider"
-    //         valueLabelDisplay="auto"
-    //         step={10}
-    //         marks
-    //         min={10}
-    //         max={100}
-    //         onChange={(event, value) => changeFontSize(event, value)}
-    //         />
-    //         <FormControlLabel style={RandomFontSizeSwitcher}
-    //         control={<Switch checked={state.checked_rfs} onChange={switchRandomFontSize} name="checked_rfs" />}
-    //         label="Random Font-Size"
-    //         />
-    //       </Container>
-    //       <Container style={ColorContainer}>
-    //         <Typography id="color-picker" gutterBottom>
-    //           Color
-    //         </Typography>
-    //         <ColorPicker style={ColorPickerFixed}
-    //           name='color'
-    //           defaultValue={vcolor}
-    //           // value={this.state.color} - for controlled component
-    //           onChange={color => changeColor(color)}
-    //         />
-    //         <FormControlLabel style={RandomColorSwitcher}
-    //         control={<Switch checked={state.checked_rc} onChange={switchRandomColor} name="checked_rc" />}
-    //         label="Random Color"
-    //         />
-    //         <FormControlLabel style={AuthorColorSwitcher}
-    //         control={<Switch checked={state.checked_au} onChange={switchAuthorColor} name="checked_au" />}
-    //         label="Author Color"
-    //         />
-    //         <TableContainer component={Paper}>
-    //           <Table className={classes.table} aria-label="simple table">
-    //             <TableHead>
-    //               <TableRow>
-    //                 <TableCell>Dessert (100g serving)</TableCell>
-    //                 <TableCell align="right">Calories</TableCell>
-    //                 <TableCell align="right">Fat&nbsp;(g)</TableCell>
-    //                 <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-    //                 <TableCell align="right">Protein&nbsp;(g)</TableCell>
-    //               </TableRow>
-    //             </TableHead>
-    //             <TableBody>
-    //               {rows.map((row) => (
-    //                 <TableRow key={row.name}>
-    //                   <TableCell component="th" scope="row">
-    //                     {row.name}
-    //                   </TableCell>
-    //                   <TableCell align="right">{row.calories}</TableCell>
-    //                   <TableCell align="right">{row.fat}</TableCell>
-    //                   <TableCell align="right">{row.carbs}</TableCell>
-    //                   <TableCell align="right">{row.protein}</TableCell>
-    //                 </TableRow>
-    //               ))}
-    //             </TableBody>
-    //           </Table>
-    //         </TableContainer>
-    //       </Container>
-    //       <Container style={MaxLayerContainer}>
-    //         <Typography id="discrete-slider" gutterBottom>
-    //           Max Layer
-    //         </Typography>
-    //         <Slider style={MaxLayerSlider}
-    //         defaultValue={vmaxlayer}
-    //         getAriaValueText={valuetext_maxlayer}
-    //         aria-labelledby="discrete-slider"
-    //         valueLabelDisplay="auto"
-    //         step={1}
-    //         marks
-    //         min={1}
-    //         max={10}
-    //         onChange={(event, value) => changeMaxLayer(event, value)}
-    //         />
-    //       </Container>
-    //     </Container>
-    //     <Container style={FooterContainer}>
-    //       <BottomNavigation style={BottomNavigationFixed}>
-    //         <Button variant="outlined" color="primary" onClick={restartDialogOpen}>
-    //           変更を反映する
-    //         </Button>
-    //         <Dialog
-    //           open={openRestartDialog}
-    //           onClose={restartDialogNo}
-    //           aria-labelledby="alert-dialog-title"
-    //           aria-describedby="alert-dialog-description"
-    //         >
-    //           <DialogTitle id="alert-dialog-title">{"変更を反映しますか？"}</DialogTitle>
-    //           <DialogContent>
-    //             <DialogContentText id="alert-dialog-description">
-    //               nicodisplayは再起動されます。
-    //             </DialogContentText>
-    //           </DialogContent>
-    //           <DialogActions>
-    //             <Button onClick={restartDialogYes} color="primary">
-    //               はい！
-    //             </Button>
-    //             <Button onClick={restartDialogNo} color="primary" autoFocus>
-    //               いいえ！
-    //             </Button>
-    //           </DialogActions>
-    //         </Dialog>
-    //         <Button variant="outlined" color="primary" onClick={closeDialogOpen}>
-    //           変更せず閉じる
-    //         </Button>
-    //         <Dialog
-    //           open={openCloseDialog}
-    //           onClose={restartDialogNo}
-    //           aria-labelledby="alert-dialog-title"
-    //           aria-describedby="alert-dialog-description"
-    //         >
-    //           <DialogTitle id="alert-dialog-title">{"設定を終了しますか？"}</DialogTitle>
-    //           <DialogContent>
-    //             <DialogContentText id="alert-dialog-description">
-    //               変更は反映されません
-    //             </DialogContentText>
-    //           </DialogContent>
-    //           <DialogActions>
-    //             <Button onClick={closeDialogYes} color="primary">
-    //               はい！
-    //             </Button>
-    //             <Button onClick={closeDialogNo} color="primary" autoFocus>
-    //               いいえ！
-    //             </Button>
-    //           </DialogActions>
-    //         </Dialog>
-    //       </BottomNavigation>
-    //     </Container>
-    //   </form>
-    // </Container>
-
   );
 };
 

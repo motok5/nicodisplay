@@ -1,7 +1,9 @@
 "use strict";
-var remote = require('electron').remote;
-var w = remote.getCurrentWindow();
-/// <reference path="./Paper.ts" />
+const {app} = require('electron').remote;
+const remote = require('electron').remote;
+const dir = remote.app.getAppPath();
+const fs = require('fs');
+let w = remote.getCurrentWindow();
 var outofWindow_num = 0;
 var paper_num = 500;
 module project {
@@ -48,10 +50,9 @@ module project {
                     paper.y -= this.myCanvas.height*1000 - paper.size;
                     // paper.baseX = this.myCanvas.width * Math.random();
                     if (outofWindow_num >= paper_num) {
-                      const fs = require("fs");
-                      const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
-                      settings.now_layer = String(Number(settings.now_layer) - 1);
-                      fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
+                      const settings_paper = JSON.parse(fs.readFileSync(`${dir}/nico_settings.json`, 'utf8'));
+                      settings_paper.now_layer = String(Number(settings_paper.now_layer) - 1);
+                      fs.writeFileSync(`${dir}/nico_settings.json`, JSON.stringify(settings_paper));
                       w.close();
                     }
                 }

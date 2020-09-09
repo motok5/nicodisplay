@@ -1,11 +1,13 @@
 #AllContainer {
   background-color: #2F3136;
 }
+.blur {
+  filter: blur(4px);
+  pointer-events: none;
+}
 body {
   background-color: #2F3136;
   color: white;
-  /* filter: blur(4px); */
-  /* overflow:hidden; */
 }
 ::-webkit-scrollbar {
       display: none;
@@ -39,12 +41,14 @@ body {
   color: white;
   background-color: #2F3136;
 }
+#AdvancedSettingsSwitcherContainer {
+  text-align: center;
+}
 #SimpleSettingsTitle {
   margin-top: 10px;
 }
 #SimpleSettingsContainer {
   margin-top: 10px;
-  /* filter:blur(4px); */
 }
 #SubTitle {
   font-size: 20px;

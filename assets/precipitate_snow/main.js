@@ -1,7 +1,9 @@
 // "use strict";
-// const fs = require("fs");
+const console = require('electron').remote.require('console');
 const {app} = require('electron').remote;
 const remote = require('electron').remote;
+const dir = remote.app.getAppPath();
+const fs = require("fs");
 let w = remote.getCurrentWindow();
 var snow_num = 200;
 var outofWindow_num = 0;
@@ -38,9 +40,9 @@ var project;
                         snow.y -= _this.myCanvas.height*1000 - snow.size;
                         // snow.baseX = _this.myCanvas.width * Math.random();
                         if (outofWindow_num >= snow_num) {
-                          const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
-                          settings.now_layer = String(Number(settings.now_layer) - 1);
-                          fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
+                          const settings_snow = JSON.parse(fs.readFileSync(`${dir}/nico_settings.json`, 'utf8'));
+                          // settings_snow.now_layer = String(Number(settings_snow.now_layer) - 1);
+                          fs.writeFileSync(`${dir}/nico_settings.json`, JSON.stringify(settings_snow));
                           w.close();
                       };
                     };

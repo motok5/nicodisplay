@@ -2,6 +2,8 @@ import React from 'react';
 import { Typography, Container } from '@material-ui/core';
 import io from 'socket.io-client';
 import Store from 'electron-store';
+const electron = require('electron');
+const BrowserWindow = electron.remote.BrowserWindow;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { remote } = require('electron');
 const { screen } = remote;
@@ -10,10 +12,19 @@ const fs = require('fs');
 const console = require('electron').remote.require('console');
 const child_process = require("child_process");
 const nicoJS = require('nicoJS');
+const dir = remote.app.getAppPath();
+const snowURL = `${dir}/assets/precipitate_snow/index.html`;
+const paperURL = `${dir}/assets/precipitate_paper/index.html`;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
-//test領域
+try {
+  const json_exist = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+  json_exist.now_layer = "0";
+} catch(error) {
+  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"5","now_layer":"0","authors_list":[{"name":"mr.bot","fontsize":50,"color":"#000000","tableData":{"id":0}}]}
+  fs.writeFileSync('./nico_settings.json', JSON.stringify(make_json));
+}
 
 const defaultBotUrl = 'http://localhost:3000';
 // storeからプロパティ呼び出し
@@ -120,45 +131,106 @@ const App: React.FC = () => {
     }
     //以下アニメーション処理
     if (content.includes("雪") || content.includes("snow")) {
-      console.log("雪");
-      //nico_settings.json読み込み
       const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
       if (Number(settings.now_layer) < Number(settings.max_layer)) {
         settings.now_layer = String(Number(settings.now_layer) + 1);
         fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
-        child_process.exec('npm start --prefix precipitate_snow', {encoding: 'Shift_JIS'}, (error:any) => {
-            if (error) {
-                //console.log(stderr);
-                //console.log("Failed");
-                // pass;
-            }
-            else {
-                //console.log(stdout);  // dir の出力を表示
-                //console.log("OK");
-            }
+        var snowWindow:any = new BrowserWindow({
+          x: 0,
+          y: 0,
+          width: size.width,
+          height: Math.round(size.height*0.95),
+          frame: false,
+          transparent: true,
+          alwaysOnTop: true,
+          resizable: true,
+          hasShadow: false,
+          skipTaskbar: true,
+          show: true,
+          webPreferences: {
+            nodeIntegration: true,
+          }
+        });
+        snowWindow.setIgnoreMouseEvents(true);
+        snowWindow.loadURL(snowURL);
+        snowWindow.on('closed', function () {
+            snowWindow = null;
+            const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+            settings.now_layer = String(Number(settings.now_layer) - 1);
+            fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
         });
       }
     } else if (content.includes("8888")) {
-      console.log("8きた");
-      //nico_settings.json読み込み
       const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
       if (Number(settings.now_layer) < Number(settings.max_layer)) {
         settings.now_layer = String(Number(settings.now_layer) + 1);
         fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
-        child_process.exec('npm start --prefix precipitate_paper', {encoding: 'Shift_JIS'}, (error:any) => {
-            if (error) {
-                //console.log(stderr);
-                //console.log("Failed");
-            }
-            else {
-                //console.log(stdout);  // dir の出力を表示
-                //console.log("OK");
-            }
+        var paperWindow:any = new BrowserWindow({
+          x: 0,
+          y: 0,
+          width: size.width,
+          height: size.height,
+          frame: false,
+          transparent: true,
+          alwaysOnTop: true,
+          resizable: true,
+          hasShadow: false,
+          skipTaskbar: true,
+          show: true,
+          webPreferences: {
+            nodeIntegration: true,
+          }
+        });
+        paperWindow.setIgnoreMouseEvents(true);
+        paperWindow.loadURL(paperURL);
+        paperWindow.on('closed', function () {
+            paperWindow = null;
+            const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+            settings.now_layer = String(Number(settings.now_layer) - 1);
+            fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
         });
       }
     } else {
-      //pass;
-    };
+      //pass
+    }
+    // if (content.includes("雪") || content.includes("snow")) {
+    //   //nico_settings.json読み込み
+    //   const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+    //   if (Number(settings.now_layer) < Number(settings.max_layer)) {
+    //     settings.now_layer = String(Number(settings.now_layer) + 1);
+    //     fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+    //     child_process.exec('npm start --prefix precipitate_snow', {encoding: 'Shift_JIS'}, (error:any) => {
+    //         if (error) {
+    //             //console.log(stderr);
+    //             //console.log("Failed");
+    //             // pass;
+    //         }
+    //         else {
+    //             //console.log(stdout);  // dir の出力を表示
+    //             //console.log("OK");
+    //         }
+    //     });
+    //   }
+    // } else if (content.includes("8888")) {
+    //   //nico_settings.json読み込み
+    //   const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+    //   if (Number(settings.now_layer) < Number(settings.max_layer)) {
+    //     settings.now_layer = String(Number(settings.now_layer) + 1);
+    //     fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+    //     child_process.exec('npm start --prefix precipitate_paper', {encoding: 'Shift_JIS'}, (error:any) => {
+    //         if (error) {
+    //             //console.log(stderr);
+    //             //console.log("Failed");
+    //         }
+    //         else {
+    //             //console.log(stdout);  // dir の出力を表示
+    //             //console.log("OK");
+    //         }
+    //     });
+    //   }
+    // } else {
+    //   //pass;
+    // };
     var chatmsg = `${author_name}:${content}`;
     nico.send(chatmsg, color, fontsize);
     //以下読み上げ処理
