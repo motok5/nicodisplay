@@ -22,7 +22,7 @@ try {
   const json_exist = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
   json_exist.now_layer = "0";
 } catch(error) {
-  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"5","now_layer":"0","authors_list":[{"name":"mr.bot","fontsize":50,"color":"#000000","tableData":{"id":0}}]}
+  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"5","now_layer":"0","authors_list":[{"name":"mr.bot","fontsize":50,"color":"black","tableData":{"id":0}}]}
   fs.writeFileSync('./nico_settings.json', JSON.stringify(make_json));
 }
 
@@ -36,10 +36,16 @@ const store = new Store<StoreType>();
 var botUrl = store.get('botUrl', defaultBotUrl);
 var simple_settings = store.get("simpleSettings", false);
 var advanced_settings = store.get("advancedSettings", false);
-var stored_fontsize = store.get("stored_fontsize", "50");
+var stored_fontsize = store.get("fontSize", "50");
 var randomFontSize = store.get("randomFontSize", false);
 var stored_color = store.get("color", "#ffffff");
 var randomColor = store.get("randomColor", false);
+console.log(botUrl);
+console.log(advanced_settings);
+console.log(stored_fontsize);
+console.log(randomFontSize);
+console.log(stored_color);
+console.log(randomColor);
 
 const nico = new nicoJS({
   app: document.getElementById('contents'),

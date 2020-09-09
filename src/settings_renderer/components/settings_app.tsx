@@ -62,6 +62,7 @@ const store = new Store<StoreType>();
 //nico_settingsから回収
 const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
 var vmaxlayer = Number(settings.max_layer);
+console.log(vmaxlayer);
 //storeから回収
 var vboturl = store.get('botUrl', 'http://localhost:3000');
 var vsimplesettings = store.get("simpleSettings", false);
@@ -186,10 +187,18 @@ const App: React.FC = () => {
   const switchStyles = (event:any) => {
     if (event.target.checked) {
       document.getElementById("SimpleSettingsContainer").classList.add("blur");
-      document.getElementById("AdvancedSettingsContainer").classList.remove("blur");
+      try {
+        document.getElementById("AdvancedSettingsContainer").classList.remove("blur");
+      } catch {
+        //pass
+      }
     } else {
       document.getElementById("AdvancedSettingsContainer").classList.add("blur");
-      document.getElementById("SimpleSettingsContainer").classList.remove("blur");
+      try {
+        document.getElementById("SimpleSettingsContainer").classList.remove("blur");
+      } catch {
+        //pass
+      }
     }
   };
   const changeFontSize = useCallback((event, value) => {
@@ -210,7 +219,7 @@ const App: React.FC = () => {
     setSwitcherState({ ...switcherState, [event.target.name]: event.target.checked });
     vrandomcolor = event.target.checked;
   };
-  const changeMaxLayer = useCallback((value) => {
+  const changeMaxLayer = useCallback((event, value) => {
     vmaxlayer = value;
   }, []);
   const useStyles = makeStyles({
@@ -392,7 +401,7 @@ const App: React.FC = () => {
               <Slider style={FontSizeSlider}
               defaultValue={parseInt(vfontsize)}
               getAriaValueText={valuetext_fontsize}
-              aria-labelledby="discrete-slider"
+              // aria-labelledby="discrete-slider"
               valueLabelDisplay="auto"
               step={10}
               marks
@@ -439,6 +448,13 @@ const App: React.FC = () => {
                   color="primary" />}
               />
             </Container>
+          </Container>
+          <Container style={AdvancedSettingsTitle} id="AdvancedSettingsTitle">
+            <Typography id="Typo-Advanced">
+              Advanced Settings
+            </Typography>
+          </Container>
+          <Container style={AdvancedSettingsContainer} id="AdvancedSettingsContainer">
             <Container style={MaxLayerContainer} id="MaxLayerContainer">
               <Typography style={SubTitle} id="SubTitle" gutterBottom>
                 Max Layer
@@ -448,25 +464,21 @@ const App: React.FC = () => {
                 数が多くなるほど負荷が増加します。
               </Typography>
               <Slider style={MaxLayerSlider}
-              defaultValue={vmaxlayer}
+              defaultValue={Number(vmaxlayer)}
               getAriaValueText={valuetext_maxlayer}
-              aria-labelledby="discrete-slider"
+              // aria-labelledby="discrete-slider"
               valueLabelDisplay="auto"
               step={1}
               marks
               min={1}
               max={10}
-              onChange={(value) => changeMaxLayer(value)}
+              onChange={(event, value) => changeMaxLayer(event, value)}
               />
             </Container>
-          </Container>
-          <Container style={AdvancedSettingsTitle} id="AdvancedSettingsTitle">
-            <Typography id="Typo-Advanced">
-              Advanced Settings
-            </Typography>
-          </Container>
-          <Container style={AdvancedSettingsContainer} id="AdvancedSettingsContainer">
             <Container style={DataTable} id="DataTable">
+            <Typography style={SubTitle} id="SubTitle" gutterBottom>
+              User Data
+            </Typography>
             <MaterialTable
               title="User Data"
               columns={tableState.columns}
