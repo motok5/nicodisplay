@@ -3,17 +3,13 @@ import { Typography, Container } from '@material-ui/core';
 import io from 'socket.io-client';
 import Store from 'electron-store';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { remote } = require('electron');
+const { remote, ipcRenderer } = require('electron');
 const { screen } = remote;
 const size = screen.getPrimaryDisplay().size;
 const fs = require('fs');
 const console = require('electron').remote.require('console');
 const child_process = require("child_process");
 const nicoJS = require('nicoJS');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-
-//test領域
 
 const defaultBotUrl = 'http://localhost:3000';
 // storeからプロパティ呼び出し
@@ -35,7 +31,6 @@ const nico = new nicoJS({
   width: size.width,
   height: Math.round(size.height*0.85),
   color: "white",
-  font_size: 100, //はみだし回避のためフォントサイズを100で開始
   speed: 10,
 });
 
@@ -120,46 +115,18 @@ const App: React.FC = () => {
     }
     //以下アニメーション処理
     if (content.includes("雪") || content.includes("snow")) {
-      console.log("雪");
-      //nico_settings.json読み込み
-      const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
-      if (Number(settings.now_layer) < Number(settings.max_layer)) {
-        settings.now_layer = String(Number(settings.now_layer) + 1);
-        fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
-        child_process.exec('npm start --prefix precipitate_snow', {encoding: 'Shift_JIS'}, (error:any) => {
-            if (error) {
-                //console.log(stderr);
-                //console.log("Failed");
-                // pass;
-            }
-            else {
-                //console.log(stdout);  // dir の出力を表示
-                //console.log("OK");
-            }
-        });
-      }
+      ipcRenderer.send('snow-animation');
     } else if (content.includes("8888")) {
-      console.log("8きた");
-      //nico_settings.json読み込み
-      const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
-      if (Number(settings.now_layer) < Number(settings.max_layer)) {
-        settings.now_layer = String(Number(settings.now_layer) + 1);
-        fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
-        child_process.exec('npm start --prefix precipitate_paper', {encoding: 'Shift_JIS'}, (error:any) => {
-            if (error) {
-                //console.log(stderr);
-                //console.log("Failed");
-            }
-            else {
-                //console.log(stdout);  // dir の出力を表示
-                //console.log("OK");
-            }
-        });
-      }
+      ipcRenderer.send('paper-animation');
     } else {
       //pass;
     };
-    var chatmsg = `${author_name}:${content}`;
+    let chatmsg = '';
+    if (author_name === '') {
+      chatmsg = content;
+    } else {
+      chatmsg = `${author_name}:${content}`;
+    }
     nico.send(chatmsg, color, fontsize);
     //以下読み上げ処理
   });

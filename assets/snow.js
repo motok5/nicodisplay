@@ -1,8 +1,3 @@
-// "use strict";
-// const fs = require("fs");
-const {app} = require('electron').remote;
-const remote = require('electron').remote;
-let w = remote.getCurrentWindow();
 var snow_num = 200;
 var outofWindow_num = 0;
 var project;
@@ -41,7 +36,6 @@ var project;
                           const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
                           settings.now_layer = String(Number(settings.now_layer) - 1);
                           fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
-                          w.close();
                       };
                     };
                 };
