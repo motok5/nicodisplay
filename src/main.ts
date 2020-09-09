@@ -5,19 +5,86 @@ import electron, {
   Menu,
   Tray,
   nativeImage,
+  ipcMain,
 } from 'electron';
 const fs = require('fs');
 const mainURL = `file://${__dirname}/../assets/index.html`;
 const settingsURL = `file://${__dirname}/../assets/settings.html`;
+const snowURL = `file://${__dirname}/../assets/snow.html`;
+const paperURL = `file://${__dirname}/../assets/paper.html`;
 
 let mainWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;
+let snowWindow: BrowserWindow | null = null;
+let paperWindow: BrowserWindow | null = null;
 let tray: any = null;
 
 // now_layerを初期化
 const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
 settings.now_layer = "0";
 fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+
+ipcMain.on('snow-animation', (event, arg) => {
+  if (snowWindow === null) {
+    const { screen } = electron;
+    const size = screen.getPrimaryDisplay().size;
+    snowWindow = new BrowserWindow({
+      x: 0,
+      y: 0,
+      width: size.width,
+      height: Math.round(size.height * 0.95),
+      frame: false,
+      transparent: true,
+      alwaysOnTop: true,
+      resizable: true,
+      hasShadow: false,
+      skipTaskbar: true,
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+    snowWindow.loadURL(snowURL);
+    snowWindow.showInactive();
+    snowWindow.setIgnoreMouseEvents(true);
+    // snowWindow.webContents.openDevTools();
+    setTimeout(() => {
+      snowWindow?.close();
+      snowWindow = null;
+    }, 20000);
+  }
+});
+
+ipcMain.on('paper-animation', (event, arg) => {
+  if (paperWindow === null) {
+    const { screen } = electron;
+    const size = screen.getPrimaryDisplay().size;
+    paperWindow = new BrowserWindow({
+      x: 0,
+      y: 0,
+      width: size.width,
+      height: Math.round(size.height * 0.95),
+      frame: false,
+      transparent: true,
+      alwaysOnTop: true,
+      resizable: true,
+      hasShadow: false,
+      skipTaskbar: true,
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+    paperWindow.loadURL(paperURL);
+    paperWindow.showInactive();
+    paperWindow.setIgnoreMouseEvents(true);
+    // paperWindow.webContents.openDevTools();
+    setTimeout(() => {
+      paperWindow?.close();
+      paperWindow = null;
+    }, 20000);
+  }
+});
 
 const createWindow = (): void => {
   if (mainWindow === null) {
@@ -34,7 +101,7 @@ const createWindow = (): void => {
       resizable: true,
       hasShadow: false,
       skipTaskbar: true,
-      show: false,
+      show: true,
       webPreferences: {
         nodeIntegration: true,
       },
@@ -55,7 +122,7 @@ const createWindow = (): void => {
 
   if (settingsWindow === null) {
     settingsWindow = new BrowserWindow({
-      width: 720,
+      width: 1000,
       height: 700,
       frame: false, //移動不可
       resizable: false,
@@ -121,6 +188,8 @@ app.whenReady().then(() => {
     {
       label: 'Close',
       click: function () {
+        snowWindow?.close();
+        paperWindow?.close();
         settingsWindow?.close();
         mainWindow?.close();
       },

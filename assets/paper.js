@@ -1,48 +1,42 @@
-// "use strict";
-const fs = require('fs');
-const {app} = require('electron').remote;
-const remote = require('electron').remote;
-let w = remote.getCurrentWindow();
+console.log("hello");
 var outofWindow_num = 0;
-var snow_num = 500;
+var paper_num = 500;
 var project;
-var colors = ["red", "blue"];
 (function (project) {
-    var Main = (function () {
-        function Main() {
+    var Main_Paper = (function () {
+        function Main_Paper() {
             var _this = this;
-            this.snowList = [];
-            // 雪を新規で作成する
-            this.createSnow = function () {
-                for (var i = 0; i < snow_num; i++) {
-                    var snow = new project.Snow();
-                    _this.snowList.push(snow);
-                    // 画面の横いっぱいに雪を降らせる
-                    snow.baseX = _this.myCanvas.width * Math.random();
-                    // 初期の雪の位置は、画面内から表示させるのではなく、画面の上部から発生させる
-                    snow.y = _this.myCanvas.height * Math.random() - _this.myCanvas.height;
+            this.paperList = [];
+            // 紙吹雪を新規で作成する
+            this.createPaper = function () {
+                for (var i = 0; i < paper_num; i++) {
+                    var paper = new project.Paper();
+                    _this.paperList.push(paper);
+                    // 画面の横いっぱいに紙吹雪を降らせる
+                    paper.baseX = _this.myCanvas.width * Math.random();
+                    // 初期の紙吹雪の位置は、画面内から表示させるのではなく、画面の上部から発生させる
+                    paper.y = _this.myCanvas.height * Math.random() - _this.myCanvas.height;
                 }
             };
             // ブラウザの更新タイミングで呼ばれる(更新)
             this.update = function () {
-                var snowListLength = _this.snowList.length;
-                for (var i = 0; i < snowListLength; i++) {
-                    var snow = _this.snowList[i];
+                var paperListLength = _this.paperList.length;
+                for (var i = 0; i < paperListLength; i++) {
+                    var paper = _this.paperList[i];
                     // 一定のスピードで下に落ちる
-                    snow.y += snow.dy;
-                    if (snow.y >= -snow.size) {
-                        snow.frame += 0.1;
+                    paper.y += paper.dy;
+                    if (paper.y >= -paper.size) {
+                        paper.frame += 0.1;
                     }
                     // 画面外に移動したら、上に移動し、全てが画面外に行くまで降ってこないようにする。
-                    if (snow.y >= _this.myCanvas.height + snow.size) {
+                    if (paper.y >= _this.myCanvas.height + paper.size) {
                         outofWindow_num += 1;
-                        snow.y -= _this.myCanvas.height*1000 - snow.size;
-                        // snow.baseX = _this.myCanvas.width * Math.random();
-                        if (outofWindow_num >= snow_num) {
+                        paper.y -= _this.myCanvas.height*1000 - paper.size;
+                        // paper.baseX = _this.myCanvas.width * Math.random();
+                        if (outofWindow_num >= paper_num) {
                           const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
                           settings.now_layer = String(Number(settings.now_layer) - 1);
                           fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
-                          w.close();
                       };
                     };
                 };
@@ -54,13 +48,13 @@ var colors = ["red", "blue"];
                 //     color += (16*Math.random() | 0).toString(16);
                 // };
                 // _this.context2d.fillStyle = "white";
-                var snowListLength = _this.snowList.length;
-                for (var i = 0; i < snowListLength; i++) {
-                    var snow = _this.snowList[i];
-                    _this.context2d.fillStyle = snow.color;
+                var paperListLength = _this.paperList.length;
+                for (var i = 0; i < paperListLength; i++) {
+                    var paper = _this.paperList[i];
+                    _this.context2d.fillStyle = paper.color;
                     _this.context2d.beginPath();
-                    // _this.context2d.arc(snow.x, snow.y, snow.size, 0, Math.PI * 2, false);
-                    _this.context2d.fillRect(snow.x,snow.y,snow.width,snow.height);
+                    // _this.context2d.arc(paper.x, paper.y, paper.size, 0, Math.PI * 2, false);
+                    _this.context2d.fillRect(paper.x,paper.y,paper.width,paper.height);
                     _this.context2d.fill();
                     _this.context2d.closePath();
                 }
@@ -69,16 +63,16 @@ var colors = ["red", "blue"];
             this.context2d = this.myCanvas.getContext('2d');
             this.myCanvas.width = document.documentElement.clientWidth;
             this.myCanvas.height = document.documentElement.clientHeight;
-            this.createSnow();
+            this.createPaper();
         }
-        return Main;
+        return Main_Paper;
     })();
-    project.Main = Main;
+    project.Main_Paper = Main_Paper;
 })(project || (project = {}));
 var project;
 (function (project) {
-    var Snow = (function () {
-        function Snow() {
+    var Paper = (function () {
+        function Paper() {
             this.width = Math.random() * 5 + 1; //幅
             this.height = this.width; //高さ
             this.size = Math.random() * 3 + 1;
@@ -90,14 +84,14 @@ var project;
             this.color = random_color;
             this.frame = 0;
         }
-        Object.defineProperty(Snow.prototype, "x", {
+        Object.defineProperty(Paper.prototype, "x", {
             get: function () {
                 return this.baseX + (Math.sin(this.frame) * 10);
             },
             enumerable: true,
             configurable: true
         });
-        return Snow;
+        return Paper;
     })();
-    project.Snow = Snow;
+    project.Paper = Paper;
 })(project || (project = {}));

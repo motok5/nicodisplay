@@ -1,6 +1,90 @@
-.dragable {
+#AllContainer {
+  background-color: #2F3136;
+}
+body {
+  background-color: #2F3136;
+  color: white;
+  /* filter: blur(4px); */
+  /* overflow:hidden; */
+}
+::-webkit-scrollbar {
+      display: none;
+      -webkit-appearance: none;
+}
+#dragable {
   -webkit-user-select: none;
   text-align: center;
   matrgin: auto;
+  height: 60px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   -webkit-app-region: drag;
+}
+#title {
+  font-weight: bold;
+  font-size: 50px;
+}
+#BodyContainer {
+  height: auto;
+  margin-bottom: 100px;
+  -webkit-app-region: unset;
+  -webkit-user-select: unset;
+}
+#Typo-Bot {
+  /* font-weight: bold;
+  font-size: 30px;
+  text-align: center; */
+}
+#BotURLTextField {
+  color: white;
+  background-color: #2F3136;
+}
+#SimpleSettingsTitle {
+  margin-top: 10px;
+}
+#SimpleSettingsContainer {
+  margin-top: 10px;
+  /* filter:blur(4px); */
+}
+#SubTitle {
+  font-size: 20px;
+}
+#Explain {
+  font-size: 15px;
+  color: silver;
+}
+#Typo-Simple {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+#FontSizeContainer {
+  margin-top: 20px;
+}
+#ColorContainer {
+  margin-top: 20px;
+}
+#MaxLayerContainer {
+  margin-top: 20px;
+}
+#Typo-Advanced {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+#TableContainer {
+  background-color: silver;
+}
+#BottomNavigationFixed {
+  background-color: #2F3136;
+  -webkit-app-region: unset;
+  -webkit-user-select: unset;
+}
+#ChangeButton {
+  margin-right: 20px;
+  background-color: white;
+}
+#UnchangeButton {
+  margin-left: 20px;
+  background-color: white;
 }

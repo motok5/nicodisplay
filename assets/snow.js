@@ -1,13 +1,9 @@
-// "use strict";
-const {app} = require('electron').remote;
-const remote = require('electron').remote;
-let w = remote.getCurrentWindow();
-var snow_num = 200
+var snow_num = 200;
 var outofWindow_num = 0;
 var project;
 (function (project) {
-    var Main = (function () {
-        function Main() {
+    var Main_Snow = (function () {
+        function Main_Snow() {
             var _this = this;
             this.snowList = [];
             // 雪を新規で作成する
@@ -40,7 +36,6 @@ var project;
                           const settings = JSON.parse(fs.readFileSync('./../nico_settings.json', 'utf8'));
                           settings.now_layer = String(Number(settings.now_layer) - 1);
                           fs.writeFileSync('./../nico_settings.json', JSON.stringify(settings));
-                          w.close();
                       };
                     };
                 };
@@ -63,9 +58,9 @@ var project;
             this.myCanvas.height = document.documentElement.clientHeight;
             this.createSnow();
         }
-        return Main;
+        return Main_Snow;
     })();
-    project.Main = Main;
+    project.Main_Snow = Main_Snow;
 })(project || (project = {}));
 var project;
 (function (project) {
