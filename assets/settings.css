@@ -1,0 +1,6 @@
+.dragable {
+  -webkit-user-select: none;
+  text-align: center;
+  matrgin: auto;
+  -webkit-app-region: drag;
+}
