@@ -20,7 +20,7 @@ try {
   settings.now_layer = "0";
   fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
 } catch(error) {
-  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"5","now_layer":"0","authors_list":[{"name":"mr.bot","fontsize":50,"color":"black","tableData":{"id":0}}]}
+  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"1","now_layer":"0","authors_list":[]}
   fs.writeFileSync('./nico_settings.json', JSON.stringify(make_json));
 }
 

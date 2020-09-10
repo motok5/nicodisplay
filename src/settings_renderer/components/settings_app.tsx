@@ -62,7 +62,6 @@ const store = new Store<StoreType>();
 //nico_settingsから回収
 const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
 var vmaxlayer = Number(settings.max_layer);
-console.log(vmaxlayer);
 //storeから回収
 var vboturl = store.get('botUrl', 'http://localhost:3000');
 var vsimplesettings = store.get("simpleSettings", false);
