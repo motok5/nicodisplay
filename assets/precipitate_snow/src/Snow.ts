@@ -10,8 +10,8 @@ module project {
             // this.color = "red";
             this.frame = 0;
         }
-        public baseX:number;
-        public y:number;
+        public baseX!:number;
+        public y!:number;
         public size:number;
         public frame:number;
         public dy:number;

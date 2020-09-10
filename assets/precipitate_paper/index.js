@@ -6,15 +6,6 @@ app.on('ready', function () {
     const { screen } = electron;
     const size = screen.getPrimaryDisplay().size;
     var mainWindow = new BrowserWindow({
-        // left: 0,
-        // top: 0,
-        // width: size.width,
-        // height: size.height,
-        // frame: false,
-        // show: true,
-        // transparent: true,
-        // resizable: false,
-        // 'always-on-top': true
         x: 0,
         y: 0,
         width: size.width,

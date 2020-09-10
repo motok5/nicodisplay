@@ -1,5 +1,5 @@
 module project {
-    export class Snow {
+    export class Paper {
         get x():number {
             return this.baseX + Math.sin(this.frame);
         }
@@ -13,10 +13,11 @@ module project {
             this.color = random_color
             this.frame = 0;
         }
-        public baseX:number;
-        public y:number;
+        public baseX!:number;
+        public y!:number;
         public size:number;
         public frame:number;
         public dy:number;
+        public color:string;
     }
 }

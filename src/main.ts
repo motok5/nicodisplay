@@ -15,9 +15,14 @@ let settingsWindow: BrowserWindow | null = null;
 let tray: any = null;
 
 // now_layerを初期化
-const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
-settings.now_layer = "0";
-fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+try {
+  const settings = JSON.parse(fs.readFileSync('./nico_settings.json', 'utf8'));
+  settings.now_layer = "0";
+  fs.writeFileSync('./nico_settings.json', JSON.stringify(settings));
+} catch(error) {
+  const make_json = {"color":"yellow","speed":"1","font_size":"50","speak":"false","show_image":"false","bot_url":"http://localhost:3000","max_layer":"1","now_layer":"0","authors_list":[]}
+  fs.writeFileSync('./nico_settings.json', JSON.stringify(make_json));
+}
 
 const createWindow = (): void => {
   if (mainWindow === null) {
@@ -34,7 +39,7 @@ const createWindow = (): void => {
       resizable: true,
       hasShadow: false,
       skipTaskbar: true,
-      show: false,
+      show: true,
       webPreferences: {
         nodeIntegration: true,
       },
@@ -42,7 +47,6 @@ const createWindow = (): void => {
     });
     mainWindow.setIgnoreMouseEvents(true);
     mainWindow.loadURL(mainURL);
-    mainWindow.showInactive();
 
     // // for debug
     // mainWindow.webContents.openDevTools();
@@ -55,7 +59,7 @@ const createWindow = (): void => {
 
   if (settingsWindow === null) {
     settingsWindow = new BrowserWindow({
-      width: 720,
+      width: 1000,
       height: 700,
       frame: false, //移動不可
       resizable: false,
