@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Container, TextField } from '@material-ui/core';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
@@ -45,7 +45,6 @@ const fs = require('fs');
 const {app} = require('electron').remote;
 const remote = require('electron').remote;
 const console = require('electron').remote.require('console');
-
 // メモ
 
 
@@ -70,7 +69,6 @@ var vfontsize = store.get("fontSize", "50");
 var vrandomfontsize = store.get("randomFontSize", false);
 var vcolor = store.get("color", "#ffffff");
 var vrandomcolor = store.get("randomColor", false);
-
 //material-table用
 interface Row {
   name: string;
@@ -102,6 +100,13 @@ ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
 const App: React.FC = () => {
+  useEffect(() => {
+    if (vadvancedsettings) {
+      document.getElementById("SimpleSettingsContainer").classList.add("blur");
+    } else {
+      document.getElementById("AdvancedSettingsContainer").classList.add("blur");
+    }
+  }, []); // <-- empty array means 'run once'
   //格納値
   const [botUrl, setBotUrl] = useState(
     store.get('botUrl', 'http://localhost:3000') //なければ右
@@ -288,6 +293,9 @@ const App: React.FC = () => {
   };
   const SimpleSettingsContainer = {
     width:"100%",
+    // if (!vadvancedsettings) {
+    //   document.getElementById("SimpleSettingsContainer").classList.remove("blur");
+    // }
   };
   const FontSizeContainer = {
     width: "100%",
@@ -579,5 +587,4 @@ const App: React.FC = () => {
     </Container>
   );
 };
-
 export default App;
